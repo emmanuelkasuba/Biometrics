@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "MFBAS",
+    "slug": "mfbas-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#0D2137"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.africore.mfbas",
+      "infoPlist": {
+        "NSCameraUsageDescription": "MFBAS needs camera access for biometric face capture."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0D2137"
+      },
+      "package": "com.africore.mfbas",
+      "permissions": ["CAMERA"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "MFBAS needs camera access for biometric face capture."
+        }
+      ]
+    ]
+  }
+}
