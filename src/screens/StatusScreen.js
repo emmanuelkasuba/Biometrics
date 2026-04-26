@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -35,19 +35,21 @@ function LogRow({ log, index }) {
   );
 }
 
-export default function StatusScreen({ navigation }) {
-  const [username, setUsername] = useState('');
+export default function StatusScreen({ navigation, route }) {
+  const prefill = route.params?.prefill ?? '';
+  const [username, setUsername] = useState(prefill);
   const [loading, setLoading] = useState(false);
   const [statusData, setStatusData] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleCheck = async () => {
-    if (!username.trim()) return;
+  const runCheck = async (name) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
     setLoading(true);
     setStatusData(null);
     setError(null);
     try {
-      const { status, data } = await getUserStatus(username.trim());
+      const { status, data } = await getUserStatus(trimmed);
       if (status === 200) {
         setStatusData(data);
       } else {
@@ -59,6 +61,12 @@ export default function StatusScreen({ navigation }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (prefill) runCheck(prefill);
+  }, []);
+
+  const handleCheck = () => runCheck(username);
 
   return (
     <SafeAreaView style={styles.safe}>
