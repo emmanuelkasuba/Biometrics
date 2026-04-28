@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { colors, shadows } from '../theme';
+import { colors, fonts, shadows } from '../theme';
 import { getUserStatus } from '../api/mfbasApi';
 
 function formatDate(iso) {
@@ -19,7 +19,7 @@ function formatDate(iso) {
 }
 
 function LogRow({ log, index }) {
-  const isSuccess = log.result === 'SUCCESS';
+  const isSuccess = log.result === 'SUCCESS' || log.result === 'SUCCESS_FINGERPRINT';
   return (
     <View style={[styles.logRow, index % 2 === 1 && styles.logRowAlt]}>
       <View style={[styles.resultChip, isSuccess ? styles.chipSuccess : styles.chipFail]}>
@@ -72,7 +72,7 @@ export default function StatusScreen({ navigation, route }) {
     <SafeAreaView style={styles.safe}>
       <View style={styles.pageHeader}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
-          <Text style={styles.backText}>‹ Back</Text>
+          <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.pageTitle}>3.3  GET /api/biometric/status/{'<username>'}/ </Text>
       </View>
@@ -147,6 +147,12 @@ export default function StatusScreen({ navigation, route }) {
               <View style={styles.identityRow}>
                 <Text style={styles.identityKey}>last_auth_at</Text>
                 <Text style={styles.identityVal}>{formatDate(statusData.last_auth_at)}</Text>
+              </View>
+              <View style={styles.identityRow}>
+                <Text style={styles.identityKey}>fingerprint</Text>
+                <Text style={[styles.identityVal, { color: statusData.fingerprint_enabled ? '#4CAF50' : '#8A9BB0' }]}>
+                  {statusData.fingerprint_enabled ? 'enabled' : 'disabled'}
+                </Text>
               </View>
             </View>
 
@@ -225,13 +231,13 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     paddingHorizontal: 16,
   },
-  back: { marginBottom: 6 },
-  backText: { color: colors.cyan, fontSize: 14, fontWeight: '600' },
+  back: { marginBottom: 6, flexDirection: 'row', alignItems: 'center' },
+  backText: { color: colors.cyan, fontSize: 16, fontFamily: fonts.semiBold },
   pageTitle: {
     color: colors.cyan,
     fontSize: 12,
-    fontWeight: '700',
-    fontFamily: 'monospace',
+    fontFamily: fonts.medium,
+    letterSpacing: 0.3,
   },
 
   scroll: { padding: 16 },

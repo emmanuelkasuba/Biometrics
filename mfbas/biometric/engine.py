@@ -162,6 +162,48 @@ def verify_pin(pin: str, pin_hash: str) -> bool:
         return False
 
 
+# ── Fingerprint Template (Pluggable) ─────────────────────────────────────────
+
+def extract_fingerprint_template(raw_bytes: bytes) -> bytes:
+    """
+    Placeholder for fingerprint minutiae extraction.
+    Replace the body with a real SDK call (e.g. SourceAFIS, Neurotechnology MegaMatcher)
+    when hardware integration is available.  The contract is: bytes in → bytes out.
+    """
+    return raw_bytes
+
+
+def encrypt_fingerprint(template: bytes) -> str:
+    """
+    AES-256-GCM encrypt a fingerprint template.
+    Identical scheme to encrypt_embedding — nonce prepended before ciphertext.
+    """
+    key    = _get_aes_key()
+    aesgcm = AESGCM(key)
+    nonce  = os.urandom(12)
+    ct     = aesgcm.encrypt(nonce, template, None)
+    return base64.b64encode(nonce + ct).decode()
+
+
+def decrypt_fingerprint(enc_b64: str) -> bytes:
+    """Decrypt and return raw fingerprint template bytes."""
+    key    = _get_aes_key()
+    aesgcm = AESGCM(key)
+    raw    = base64.b64decode(enc_b64.encode())
+    nonce, ct = raw[:12], raw[12:]
+    return aesgcm.decrypt(nonce, ct, None)
+
+
+def match_fingerprint(live_template: bytes, stored_template: bytes) -> bool:
+    """
+    Placeholder for fingerprint template matching.
+    Replace with SDK matcher when integrating real hardware.
+    Stub: exact byte comparison (works only when the same raw bytes are re-submitted).
+    Returns True if templates match.
+    """
+    return live_template == stored_template
+
+
 # ── Lockout Logic ─────────────────────────────────────────────────────────────
 
 LOCKOUT_DURATIONS = [30, 300, 1800]   # seconds: 30s, 5min, 30min

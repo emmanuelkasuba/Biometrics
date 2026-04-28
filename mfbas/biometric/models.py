@@ -11,9 +11,12 @@ class BiometricEnrollment(models.Model):
     user_id        = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username       = models.CharField(max_length=64, unique=True)
     # AES-256-GCM encrypted 128-dim FaceNet embedding (base64 stored)
-    embedding_enc  = models.TextField(help_text="Base64(nonce || ciphertext) of 128-dim embedding")
+    embedding_enc      = models.TextField(help_text="Base64(nonce || ciphertext) of 128-dim embedding")
     # bcrypt hash of 6-digit PIN
-    pin_hash       = models.CharField(max_length=64)
+    pin_hash           = models.CharField(max_length=64)
+    # Optional fingerprint template (AES-256-GCM encrypted, same scheme as face embedding)
+    fingerprint_enc    = models.TextField(null=True, blank=True, help_text="Base64(nonce || ciphertext) of fingerprint template")
+    fingerprint_enabled = models.BooleanField(default=False)
     enrolled_at    = models.DateTimeField(auto_now_add=True)
     last_auth_at   = models.DateTimeField(null=True, blank=True)
     fail_count     = models.SmallIntegerField(default=0)
@@ -28,9 +31,15 @@ class BiometricEnrollment(models.Model):
 
 class AuthAuditLog(models.Model):
     """Immutable audit trail of every authentication attempt."""
-    RESULT_CHOICES = [("SUCCESS", "Success"), ("FAIL_FACE", "Face Gate Failed"),
-                      ("FAIL_PIN", "PIN Gate Failed"), ("FAIL_LIVENESS", "Liveness Failed"),
-                      ("FAIL_LOCKOUT", "Account Locked")]
+    RESULT_CHOICES = [
+        ("SUCCESS",              "Success"),
+        ("SUCCESS_FINGERPRINT",  "Fingerprint Auth Success"),
+        ("FAIL_FACE",            "Face Gate Failed"),
+        ("FAIL_FINGERPRINT",     "Fingerprint Gate Failed"),
+        ("FAIL_PIN",             "PIN Gate Failed"),
+        ("FAIL_LIVENESS",        "Liveness Failed"),
+        ("FAIL_LOCKOUT",         "Account Locked"),
+    ]
 
     enrollment    = models.ForeignKey(BiometricEnrollment, on_delete=models.CASCADE, related_name="audit_logs")
     result        = models.CharField(max_length=20, choices=RESULT_CHOICES)

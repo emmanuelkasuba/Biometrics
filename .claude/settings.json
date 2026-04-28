@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk '{print $1}')",
+      "Bash(nohup npx *)",
+      "Bash(echo \"Expo PID: $!\")",
+      "Bash(pkill -f \"expo start\")",
+      "Bash(nohup node_modules/.bin/expo start --lan)",
+      "Bash(pkill -f \"manage.py runserver\")",
+      "Bash(pkill -f \"metro\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('dependencies',{}\\).get\\('expo-font','not found'\\)\\)\")",
+      "WebSearch",
+      "WebFetch(domain:m3.material.io)",
+      "WebFetch(domain:www.orbix.studio)",
+      "WebFetch(domain:blog.logrocket.com)",
+      "WebFetch(domain:www.saasframe.io)",
+      "WebFetch(domain:developer.mastercard.com)",
+      "WebFetch(domain:m1.material.io)",
+      "WebFetch(domain:acodez.in)",
+      "WebFetch(domain:www.theusefulapps.com)"
+    ]
+  }
+}

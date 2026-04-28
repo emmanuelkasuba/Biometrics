@@ -1,218 +1,265 @@
 import React from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
+  View, Text, TouchableOpacity, StyleSheet,
+  SafeAreaView, StatusBar, ScrollView,
 } from 'react-native';
-import { colors, typography, shadows } from '../theme';
+import { colors, fonts, shadows } from '../theme';
+import { s, vs, ms } from '../utils/scale';
+
+const METHODS = [
+  {
+    num:     '01',
+    name:    'Face Recognition',
+    factor:  'Biometric factor — something you are',
+    detail:  'The system captures a live photo and extracts a 512-dimension embedding using FaceNet. It then compares that embedding to your enrolled template. The cosine similarity score must reach 0.82 or higher to pass this gate.',
+    color:   colors.navy,
+  },
+  {
+    num:     '02',
+    name:    'Fingerprint',
+    factor:  'Biometric factor — something you are',
+    detail:  'Your device secure enclave handles fingerprint matching directly. No fingerprint data ever leaves the device. When the device confirms a match, the server receives only a confirmation signal and then checks your PIN.',
+    color:   '#00695C',
+  },
+  {
+    num:     '03',
+    name:    'PIN Code',
+    factor:  'Knowledge factor — something you know',
+    detail:  'A 6-digit PIN is required as the second factor in every login attempt. It is stored as a bcrypt hash with a cost factor of 12. The comparison is performed in constant time to prevent timing attacks.',
+    color:   '#4527A0',
+  },
+];
+
+const ACTIONS = [
+  { label: 'Register',       sub: 'Enroll face, fingerprint, and PIN', screen: 'Enroll' },
+  { label: 'Sign In',        sub: 'Verify identity with two factors',   screen: 'Authenticate' },
+  { label: 'Account Status', sub: 'View logs, fail count, and locks',   screen: 'Status' },
+];
 
 export default function HomeScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={ss.safe}>
       <StatusBar barStyle="light-content" backgroundColor={colors.navy} />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTag}>SEC2201 – BIOMETRICS I  |  GROUP 10</Text>
-        <View style={styles.divider} />
-        <Text style={styles.title}>MFBAS</Text>
-        <Text style={styles.subtitle}>Multi-Factor Biometric{'\n'}Authentication System</Text>
-        <View style={styles.divider} />
-        <Text style={styles.version}>MFBAS-DG-001  •  Version 1.0  •  April 2025</Text>
-        <Text style={styles.org}>AfriCore Intelligence Limited — FinCore Vertical</Text>
+      {/* Top bar */}
+      <View style={ss.topBar}>
+        <View>
+          <Text style={ss.brand}>MFBAS</Text>
+          <Text style={ss.brandSub}>Multi-Factor Biometric Authentication System</Text>
+        </View>
+        <View style={ss.badge}>
+          <Text style={ss.badgeText}>SEC2201 · Group 10</Text>
+        </View>
       </View>
 
-      {/* Cards */}
-      <View style={styles.body}>
-        <Text style={styles.sectionLabel}>Select Operation</Text>
-
-        <TouchableOpacity
-          style={[styles.card, styles.cardEnroll]}
-          onPress={() => navigation.navigate('Enroll')}
-          activeOpacity={0.85}
-        >
-          <View style={styles.cardIconCircle}>
-            <Text style={styles.cardIcon}>👤</Text>
-          </View>
-          <View style={styles.cardText}>
-            <Text style={styles.cardTitle}>Enroll User</Text>
-            <Text style={styles.cardDesc}>
-              Register a new user with username, PIN, and 3 face images
-            </Text>
-          </View>
-          <Text style={styles.cardArrow}>›</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.card, styles.cardAuth]}
-          onPress={() => navigation.navigate('Authenticate')}
-          activeOpacity={0.85}
-        >
-          <View style={[styles.cardIconCircle, { backgroundColor: '#E3F6FA' }]}>
-            <Text style={styles.cardIcon}>🔒</Text>
-          </View>
-          <View style={styles.cardText}>
-            <Text style={[styles.cardTitle, { color: colors.cyan }]}>Authenticate</Text>
-            <Text style={styles.cardDesc}>
-              Verify identity via face similarity + PIN (dual-gate)
-            </Text>
-          </View>
-          <Text style={[styles.cardArrow, { color: colors.cyan }]}>›</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.card, styles.cardStatus]}
-          onPress={() => navigation.navigate('Status')}
-          activeOpacity={0.85}
-        >
-          <View style={[styles.cardIconCircle, { backgroundColor: '#EEF2FF' }]}>
-            <Text style={styles.cardIcon}>📊</Text>
-          </View>
-          <View style={styles.cardText}>
-            <Text style={[styles.cardTitle, { color: '#3730A3' }]}>Check Status</Text>
-            <Text style={styles.cardDesc}>
-              View enrollment record, fail count, lockout, and audit logs
-            </Text>
-          </View>
-          <Text style={[styles.cardArrow, { color: '#3730A3' }]}>›</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          AfriCore Intelligence Limited  |  Zambia DPA 2021 Compliant
+      <ScrollView
+        style={ss.scroll}
+        contentContainerStyle={ss.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Section: how the system works */}
+        <Text style={ss.sectionLabel}>Authentication factors</Text>
+        <Text style={ss.sectionIntro}>
+          Every login requires two independent factors. One proves who you are
+          physically; the other proves you know your secret PIN.
         </Text>
-        <Text style={styles.footerRight}>Confidential — Group 10</Text>
-      </View>
+
+        {METHODS.map((m, i) => (
+          <View key={m.num} style={[ss.methodBlock, i < METHODS.length - 1 && ss.methodBorder]}>
+            <View style={ss.methodTop}>
+              <View style={[ss.numBadge, { borderColor: m.color }]}>
+                <Text style={[ss.numText, { color: m.color }]}>{m.num}</Text>
+              </View>
+              <View style={ss.methodTitles}>
+                <Text style={ss.methodName}>{m.name}</Text>
+                <Text style={[ss.methodFactor, { color: m.color }]}>{m.factor}</Text>
+              </View>
+            </View>
+            <Text style={ss.methodDetail}>{m.detail}</Text>
+          </View>
+        ))}
+
+        {/* Section: actions */}
+        <Text style={[ss.sectionLabel, { marginTop: vs(32) }]}>Actions</Text>
+
+        <View style={ss.actionGroup}>
+          {ACTIONS.map((a, i) => (
+            <TouchableOpacity
+              key={a.screen}
+              style={[ss.actionRow, i < ACTIONS.length - 1 && ss.actionBorder]}
+              onPress={() => navigation.navigate(a.screen)}
+              activeOpacity={0.7}
+            >
+              <View style={ss.actionText}>
+                <Text style={ss.actionLabel}>{a.label}</Text>
+                <Text style={ss.actionSub}>{a.sub}</Text>
+              </View>
+              <Text style={ss.actionArrow}>›</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Footer */}
+        <Text style={ss.footer}>
+          AfriCore Intelligence Limited  ·  Zambia DPA 2021 Compliant  ·  April 2025
+        </Text>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.navy },
+const ss = StyleSheet.create({
+  safe:  { flex: 1, backgroundColor: colors.navy },
+  scroll: { flex: 1, backgroundColor: colors.offWhite },
+  scrollContent: { padding: s(22), paddingBottom: vs(48) },
 
-  header: {
-    backgroundColor: colors.navy,
-    alignItems: 'center',
-    paddingTop: 24,
-    paddingBottom: 28,
-    paddingHorizontal: 24,
-  },
-  headerTag: {
-    color: colors.cyan,
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1.2,
-    textTransform: 'uppercase',
-    marginBottom: 10,
-  },
-  divider: {
-    width: '80%',
-    height: 1.5,
-    backgroundColor: colors.cyan,
-    marginVertical: 10,
-    opacity: 0.6,
-  },
-  title: {
-    fontSize: 42,
-    fontWeight: '800',
-    color: colors.white,
-    letterSpacing: 4,
-    marginTop: 6,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.cyan,
-    textAlign: 'center',
-    fontWeight: '500',
-    marginTop: 4,
-    lineHeight: 20,
-  },
-  version: {
-    fontSize: 11,
-    color: colors.grey,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  org: {
-    fontSize: 11,
-    color: colors.grey,
-    marginTop: 2,
-    textAlign: 'center',
-  },
-
-  body: {
-    flex: 1,
-    backgroundColor: colors.offWhite,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 24,
-  },
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.grey,
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
-    marginBottom: 16,
-    marginLeft: 4,
-  },
-
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 14,
+  topBar: {
     flexDirection: 'row',
-    alignItems: 'center',
-    ...shadows.card,
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    paddingHorizontal: s(22),
+    paddingTop: vs(14),
+    paddingBottom: vs(20),
+    backgroundColor: colors.navy,
   },
-  cardEnroll: { borderLeftWidth: 4, borderLeftColor: colors.navy },
-  cardAuth: { borderLeftWidth: 4, borderLeftColor: colors.cyan },
-  cardStatus: { borderLeftWidth: 4, borderLeftColor: '#3730A3' },
-  cardIconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#EDF2F7',
+  brand: {
+    fontSize: ms(34),
+    fontFamily: fonts.bold,
+    color: colors.white,
+    letterSpacing: s(4),
+  },
+  brandSub: {
+    fontSize: ms(11),
+    fontFamily: fonts.light,
+    color: colors.cyan,
+    marginTop: vs(3),
+    letterSpacing: 0.2,
+  },
+  badge: {
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: s(10),
+    paddingVertical: vs(5),
+  },
+  badgeText: {
+    fontSize: ms(11),
+    fontFamily: fonts.medium,
+    color: 'rgba(255,255,255,0.55)',
+    letterSpacing: 0.4,
+  },
+
+  sectionLabel: {
+    fontSize: ms(11),
+    fontFamily: fonts.semiBold,
+    color: colors.textSub,
+    letterSpacing: 1.3,
+    textTransform: 'uppercase',
+    marginBottom: vs(8),
+  },
+  sectionIntro: {
+    fontSize: ms(14),
+    fontFamily: fonts.regular,
+    color: colors.textSub,
+    lineHeight: ms(14) * 1.6,
+    marginBottom: vs(20),
+  },
+
+  // Method blocks sit inside one card
+  methodBlock: {
+    backgroundColor: colors.white,
+    paddingVertical: vs(18),
+    paddingHorizontal: s(18),
+    ...shadows.card,
+    borderRadius: 0,
+  },
+  // Only the wrapping view gets the border-radius
+  methodBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  methodTop: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: vs(10),
+  },
+  numBadge: {
+    width: s(36),
+    height: s(36),
+    borderRadius: 4,
+    borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 14,
+    marginRight: s(12),
+    flexShrink: 0,
   },
-  cardIcon: { fontSize: 20 },
-  cardText: { flex: 1 },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.navy,
-    marginBottom: 3,
+  numText: {
+    fontSize: ms(12),
+    fontFamily: fonts.bold,
+    letterSpacing: 0.5,
   },
-  cardDesc: {
-    fontSize: 12,
-    color: colors.grey,
-    lineHeight: 17,
+  methodTitles: { flex: 1 },
+  methodName: {
+    fontSize: ms(15),
+    fontFamily: fonts.semiBold,
+    color: colors.text,
+    marginBottom: vs(3),
   },
-  cardArrow: {
-    fontSize: 28,
-    color: colors.navy,
-    fontWeight: '300',
-    marginLeft: 8,
+  methodFactor: {
+    fontSize: ms(11),
+    fontFamily: fonts.medium,
+    letterSpacing: 0.2,
+  },
+  methodDetail: {
+    fontSize: ms(13),
+    fontFamily: fonts.regular,
+    color: colors.textSub,
+    lineHeight: ms(13) * 1.65,
+    paddingLeft: s(48),   // align with title
+  },
+
+  // Action group is one card with dividers
+  actionGroup: {
+    backgroundColor: colors.white,
+    borderRadius: 14,
+    overflow: 'hidden',
+    ...shadows.card,
+    marginBottom: vs(28),
+  },
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: vs(16),
+    paddingHorizontal: s(18),
+  },
+  actionBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  actionText: { flex: 1 },
+  actionLabel: {
+    fontSize: ms(15),
+    fontFamily: fonts.semiBold,
+    color: colors.text,
+    marginBottom: vs(2),
+  },
+  actionSub: {
+    fontSize: ms(12),
+    fontFamily: fonts.regular,
+    color: colors.textSub,
+  },
+  actionArrow: {
+    fontSize: ms(24),
+    color: colors.greyMid,
+    fontFamily: fonts.light,
+    marginLeft: s(8),
   },
 
   footer: {
-    backgroundColor: colors.offWhite,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: colors.greyLight,
+    fontSize: ms(11),
+    fontFamily: fonts.light,
+    color: colors.greyMid,
+    textAlign: 'center',
+    lineHeight: ms(11) * 1.7,
   },
-  footerText: { fontSize: 10, color: colors.grey },
-  footerRight: { fontSize: 10, color: colors.grey },
 });

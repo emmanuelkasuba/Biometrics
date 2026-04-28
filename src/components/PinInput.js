@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { View, TextInput, StyleSheet, Text } from 'react-native';
-import { colors } from '../theme';
+import { colors, fonts } from '../theme';
 
 export default function PinInput({ value, onChange, label }) {
   const inputs = useRef([]);
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   container: { marginBottom: 20 },
   label: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     color: colors.grey,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
@@ -54,14 +54,15 @@ const styles = StyleSheet.create({
   },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
   cell: {
-    width: 44,
-    height: 52,
-    borderRadius: 10,
+    width: 46,
+    height: 58,
+    borderRadius: 12,
     borderWidth: 1.5,
     borderColor: colors.greyLight,
     backgroundColor: colors.white,
     textAlign: 'center',
     fontSize: 22,
+    fontFamily: fonts.medium,
     color: colors.navy,
   },
   cellFilled: {

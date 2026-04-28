@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
-import { colors } from '../theme';
+import { colors, fonts } from '../theme';
+import { s as sc, vs, ms } from '../utils/scale';
 
 export default function CameraCapture({ onCapture, label, disabled }) {
   const [permission, requestPermission] = useCameraPermissions();
@@ -51,7 +52,6 @@ export default function CameraCapture({ onCapture, label, disabled }) {
         disabled={disabled}
         activeOpacity={0.8}
       >
-        <Text style={styles.icon}>📸</Text>
         <Text style={styles.btnText}>{label || 'Capture Face'}</Text>
       </TouchableOpacity>
 
@@ -70,7 +70,7 @@ export default function CameraCapture({ onCapture, label, disabled }) {
             <TouchableOpacity style={styles.captureBtn} onPress={capture}>
               <View style={styles.captureInner} />
             </TouchableOpacity>
-            <View style={{ width: 80 }} />
+            <View style={{ width: sc(80) }} />
           </View>
 
           <Text style={styles.hint}>
@@ -84,28 +84,23 @@ export default function CameraCapture({ onCapture, label, disabled }) {
 
 const styles = StyleSheet.create({
   btn: {
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: colors.navy,
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    marginBottom: 10,
+    borderRadius: 12,
+    height: vs(52),
+    paddingHorizontal: sc(18),
+    marginBottom: vs(10),
   },
   btnDisabled: { opacity: 0.4 },
-  icon: { fontSize: 18, marginRight: 10 },
-  btnText: { color: colors.white, fontSize: 14, fontWeight: '600' },
+  btnText: { color: colors.white, fontSize: ms(15), fontFamily: fonts.semiBold },
 
   modal: { flex: 1, backgroundColor: '#000' },
   camera: { flex: 1 },
-  overlay: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  overlay: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   faceGuide: {
-    width: 200,
-    height: 260,
+    width: sc(200),
+    height: vs(260),
     borderRadius: 110,
     borderWidth: 2,
     borderColor: colors.cyan,
@@ -115,32 +110,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 30,
-    paddingVertical: 20,
+    paddingHorizontal: sc(30),
+    paddingVertical: vs(20),
     backgroundColor: '#111',
   },
-  cancelBtn: { width: 80, alignItems: 'center' },
-  cancelText: { color: colors.grey, fontSize: 14 },
+  cancelBtn: { width: sc(80), alignItems: 'center' },
+  cancelText: { color: '#9CA3AF', fontSize: ms(14), fontFamily: fonts.regular },
   captureBtn: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    width: sc(70),
+    height: sc(70),
+    borderRadius: sc(35),
     borderWidth: 4,
     borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   captureInner: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: sc(56),
+    height: sc(56),
+    borderRadius: sc(28),
     backgroundColor: colors.white,
   },
   hint: {
-    color: colors.grey,
-    fontSize: 11,
+    color: '#9CA3AF',
+    fontSize: ms(11),
+    fontFamily: fonts.regular,
     textAlign: 'center',
-    paddingBottom: 16,
+    paddingTop: vs(8),
+    paddingBottom: vs(16),
     backgroundColor: '#111',
   },
 });

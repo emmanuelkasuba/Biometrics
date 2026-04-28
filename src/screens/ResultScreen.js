@@ -7,7 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import { colors, shadows } from '../theme';
+import { colors, fonts, shadows } from '../theme';
 
 function StatusLine({ label, value, mono }) {
   return (
@@ -43,7 +43,7 @@ export default function ResultScreen({ route, navigation }) {
     <SafeAreaView style={styles.safe}>
       <View style={styles.pageHeader}>
         <TouchableOpacity onPress={() => navigation.popToTop()} style={styles.back}>
-          <Text style={styles.backText}>‹ Home</Text>
+          <Text style={styles.backText}>← Home</Text>
         </TouchableOpacity>
         <Text style={styles.pageTitle}>Response</Text>
       </View>
@@ -82,21 +82,26 @@ export default function ResultScreen({ route, navigation }) {
             <StatusLine label="authenticated" value="true" mono />
             <StatusLine label="user_id" value={data.user_id} mono />
             <StatusLine label="username" value={data.username} mono />
-            <View style={styles.similarityRow}>
-              <Text style={styles.statusKey}>similarity</Text>
-              <View style={styles.similarityBar}>
-                <View
-                  style={[
-                    styles.similarityFill,
-                    { width: `${Math.round((data.similarity ?? 0) * 100)}%` },
-                  ]}
-                />
-              </View>
-              <Text style={styles.similarityVal}>
-                {(data.similarity ?? 0).toFixed(4)}
-              </Text>
-            </View>
-            <StatusLine label="threshold" value="0.82 (default)" mono />
+            <StatusLine label="biometric" value={data.biometric ?? 'face'} mono />
+            {data.biometric !== 'fingerprint' && (
+              <>
+                <View style={styles.similarityRow}>
+                  <Text style={styles.statusKey}>similarity</Text>
+                  <View style={styles.similarityBar}>
+                    <View
+                      style={[
+                        styles.similarityFill,
+                        { width: `${Math.round((data.similarity ?? 0) * 100)}%` },
+                      ]}
+                    />
+                  </View>
+                  <Text style={styles.similarityVal}>
+                    {(data.similarity ?? 0).toFixed(4)}
+                  </Text>
+                </View>
+                <StatusLine label="threshold" value="0.82 (default)" mono />
+              </>
+            )}
             <StatusLine label="message" value={data.message} />
           </View>
         )}
@@ -197,9 +202,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  back: {},
-  backText: { color: colors.cyan, fontSize: 14, fontWeight: '600' },
-  pageTitle: { color: colors.white, fontSize: 15, fontWeight: '700' },
+  back: { flexDirection: 'row', alignItems: 'center' },
+  backText: { color: colors.cyan, fontSize: 16, fontFamily: fonts.semiBold },
+  pageTitle: { color: colors.white, fontSize: 15, fontFamily: fonts.bold },
 
   scroll: { padding: 16 },
 
@@ -301,20 +306,22 @@ const styles = StyleSheet.create({
 
   primaryBtn: {
     backgroundColor: colors.navy,
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: 14,
+    height: 56,
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 10,
     ...shadows.card,
   },
-  primaryBtnText: { color: colors.white, fontSize: 14, fontWeight: '700' },
+  primaryBtnText: { color: colors.white, fontSize: 16, fontFamily: fonts.semiBold, letterSpacing: 0.2 },
 
   secondaryBtn: {
     borderWidth: 1.5,
-    borderColor: colors.navy,
-    borderRadius: 12,
-    paddingVertical: 13,
+    borderColor: colors.border,
+    borderRadius: 14,
+    height: 56,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  secondaryBtnText: { color: colors.navy, fontSize: 13, fontWeight: '600' },
+  secondaryBtnText: { color: colors.navy, fontSize: 15, fontFamily: fonts.medium },
 });
